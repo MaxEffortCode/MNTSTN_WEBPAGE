@@ -13,6 +13,7 @@
     <script>
       const ul = document.querySelector("ul")
       const getUsers = async () => {
+        //const res = await fetch("/api/auth/getUserSelf")
         const res = await fetch("/api/auth/getUsers")
         const data = await res.json()
         data.user.map(mappedUser => {

@@ -1,8 +1,47 @@
 const User = require("../model/user");
+const UserWithToken = require("../model/userWithToken");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const jwtSecret = "61803f464c7e8cac7130fcd37cc06045f90c0a6e8fc2a1f09f043d742a31cfdd168522";
 
+exports.registerWithToken = async (req, res, next) => {
+  const { username, password, apiToken } = req.body;
+  if (password.length < 6) {
+    return res.status(400).json({ message: "Password less than 6 characters" });
+  }
+  bcrypt.hash(password, 10).then(async (hash) => {
+    await UserWithToken.create({
+      username,
+      password: hash,
+      apiToken,
+    })
+      .then((userWithToken) => {
+        const maxAge = 3 * 60 * 60;
+        const token = jwt.sign(
+          { id: userWithToken._id, username, role: userWithToken.role },
+          jwtSecret,
+          {
+            expiresIn: maxAge, // 3hrs
+          }
+        );
+        res.cookie("jwt", token, {
+          httpOnly: true,
+          maxAge: maxAge * 1000,
+        });
+        res.status(201).json({
+          message: "UserWithToken successfully created",
+          user: userWithToken._id,
+          role: userWithToken.role,
+        });
+      })
+      .catch((error) =>
+        res.status(400).json({
+          message: "UserWithToken not successful created",
+          error: error.message,
+        })
+      );
+  });
+};
 
 exports.register = async (req, res, next) => {
   const { username, password } = req.body;
@@ -153,6 +192,25 @@ exports.getUsers = async (req, res, next) => {
   await User.find({})
     .then((users) => {
       const userFunction = users.map((user) => {
+        const container = {};
+        container.username = user.username;
+        container.role = user.role;
+        container.id = user._id;
+
+        return container;
+      });
+      res.status(200).json({ user: userFunction });
+    })
+    .catch((err) =>
+      res.status(401).json({ message: "Not successful", error: err.message })
+    );
+};
+
+exports.getUserSelf = async (req, res, next) => {
+  const { id } = req.body;
+  await User.findById(id)
+    .then((user) => {
+      const userFunction = user.map((user) => {
         const container = {};
         container.username = user.username;
         container.role = user.role;

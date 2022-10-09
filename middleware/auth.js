@@ -30,6 +30,9 @@ exports.userAuth = (req, res, next) => {
         if (decodedToken.role !== "Basic") {
           return res.status(401).json({ message: "Not authorized" });
         } else {
+          console.log('Time: %d', Date.now());
+          console.log("Token is : ");
+          console.log(token);
           next();
         }
       }

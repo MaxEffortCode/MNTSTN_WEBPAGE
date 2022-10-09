@@ -51,7 +51,7 @@ $(document).ready(function() {
           items : 3,
           itemsDesktop : [1199,3],
           itemsDesktopSmall : [979,3],
-          slideSpeed: 300,
+          slideSpeed: 1000,
           itemsDesktop : [1199,2],
           itemsTablet: [768,1],
           itemsTabletSmall: [985,2],

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -8,42 +9,43 @@
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
       crossorigin="anonymous"
     />
-    <title>Login Page </title>
+    <title>Register Page</title>
   </head>
   <%- include('./partials/head') %> <%- include('./partials/header') %>
+
   <body>
     
     <form>
       <div class="error" style="background-color: red"></div>
       <div class="container">
-        
         <div class="form-group">
           <div class="row justify-content-center">
-            
             <div class="col col-10">
-              <h1>Login<%= userNM %></h1>
-              <br/>
-              <label for="username">Username</label>
+              <h1>Register</h1>
+              <label for="username">Username</label><br />
               <input
                 type="text"
+                id="username"
                 class="form-control"
                 aria-describedby="emailHelp"
                 placeholder="Enter email"
-                id="username"
                 required
-              />
-              <small id="emailHelp" class="form-text text-muted">
-                We'll never share your email with anyone else.
-              </small>
+              /><br />
             </div>
           </div>
         </div>
-
         <div class="form-group">
           <div class="row justify-content-center">
             <div class="col col-10">
-              <label for="password">Password</label>
-              <input type="password" class="form-control" id="password" placeholder="Password" />
+              <label for="password">Password</label><br />
+              <input
+                type="password"
+                id="password"
+                class="form-control"
+                aria-describedby="passwordhelp"
+                placeholder="Enter password"
+                required
+              /><br />
             </div>
           </div>
         </div>
@@ -53,28 +55,24 @@
               <br />
               <button type="submit" class="btn btn-primary">Submit</button>
             </div>
-
-              <div class="col col-10">
-                <a href="/register">Don't have an accout? Register</a>
-              </div>
           </div>
         </div>
-        
       </div>
     </form>
-    
+    <a href="/login">Already registered? Login</a>
     <script>
       const form = document.querySelector("form");
       const username = document.querySelector("#username");
       const password = document.querySelector("#password");
+      const apiToken = "1";
       const display = document.querySelector(".error");
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
         display.textContent = "";
         try {
-          const res = await fetch("/api/auth/login", {
+          const res = await fetch("/api/auth/registerWithToken", {
             method: "POST",
-            body: JSON.stringify({ username: username.value, password: password.value }),
+            body: JSON.stringify({ username: username.value, password: password.value, apiToken: apiToken }),
             headers: { "Content-Type": "application/json" },
           });
           const data = await res.json();

@@ -1,6 +1,6 @@
 // user.js
 const Mongoose = require("mongoose")
-const UserWithTokenSchema = new Mongoose.Schema({
+const UserSchema = new Mongoose.Schema({
   username: {
     type: String,
     unique: true,
@@ -11,6 +11,11 @@ const UserWithTokenSchema = new Mongoose.Schema({
     minlength: 6,
     required: true,
   },
+  apiToken: {
+    type: String,
+    unique: true,
+    required: true,
+  },
   role: {
     type: String,
     default: "Basic",
@@ -18,5 +23,5 @@ const UserWithTokenSchema = new Mongoose.Schema({
   },
 })
 
-const User = Mongoose.model("user", UserWithTokenSchema)
-module.exports = User
+const UserWithToken = Mongoose.model("userwithtoken", UserSchema)
+module.exports = UserWithToken
