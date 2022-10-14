@@ -6,6 +6,9 @@
         function visitLogin(){
             window.location='http://localhost:5000/login';
         }
+        function visitLogout(){
+            window.location='http://localhost:5000/logout';
+        }
     </script>
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
@@ -15,8 +18,14 @@
             </ul>
             <div class="text-end">
                 
-                <button type="button" class="btn btn-outline-light me-2" onclick="visitLogin();">Login</button>
-                <button type="button" class="btn btn-warning" onclick="visitRegister();">Free API Key</button>
+                <% if(isLoggedIn){ %>
+                    <button type="button" class="btn btn-warning me-2" onclick="visitRegister();">My Account</button>
+                    <button type="button" class="btn btn-outline-light me-2" onclick="visitLogout();">Log-out</button>
+                    <% } else{ %> 
+                        <button type="button" class="btn btn-warning me-2" onclick="visitRegister();">Free API Key</button>
+                        <button type="button" class="btn btn-outline-light me-2" onclick="visitLogin();">Login</button>
+                    <% } %>
+                
             </div>
         </div>
     </div>

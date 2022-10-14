@@ -41,7 +41,7 @@ exports.userAuth = (req, res, next) => {
     return res.status(401).json({ message: "Not authorized, token not available" });
   }
 };
-/* 
+
 exports.userIsLoggedIn = (req, res, next) => {
   const token = req.cookies.jwt;
   if (token) {
@@ -83,7 +83,7 @@ exports.userIsLoggedIn = (req, res, next) => {
     next();
   }
 };
- */
+ 
 exports.userIsLoggedInTrueOrFalse = (req, res, next) => {
   const token = req.cookies.jwt;
   if (token) {
@@ -94,7 +94,7 @@ exports.userIsLoggedInTrueOrFalse = (req, res, next) => {
         req.isLoggedIn = true;  
         req.user = decodedToken.username;
 
-        console.log()
+        console.log(decodedToken.username)
         next();
       }
     });

@@ -19,6 +19,7 @@ process.on("unhandledRejection", err => {
 
 app.set("view engine", "ejs")
 
+
 app.use(express.json())
 //binding middleware to an instance of the app object
 app.use("/api/auth", require("./Auth/route"))
@@ -31,10 +32,10 @@ app.locals.title = 'UserNM';
 
 
 app.get("/home", userIsLoggedInTrueOrFalse, (req, res) => res.render("home", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
-app.get("", (req, res) => res.render("home"))
+app.get("", userIsLoggedInTrueOrFalse, (req, res) => res.render("home", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
 app.get("/register", userIsLoggedInTrueOrFalse, (req, res) => res.render("register", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
-app.get("/registerWithToken", (req, res) => res.render("registerWithToken"))
-app.get("/login", (req, res) => res.render("login", {"userNM" : req.title, "userFromReq": req.user, "logdetails":""}))
+app.get("/registerWithToken", userIsLoggedInTrueOrFalse, (req, res) => res.render("registerWithToken", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
+app.get("/login", userIsLoggedInTrueOrFalse, (req, res) => res.render("login", {"userNM" : req.title, "userFromReq": req.user, "logdetails":"", "isLoggedIn" : req.isLoggedIn}))
 app.get("/admin", adminAuth, (req, res) => res.render("admin"))
 app.get("/basic", userAuth, (req, res) => res.render("user"))
 app.get("/logout", (req, res) => {

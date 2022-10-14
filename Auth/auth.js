@@ -4,8 +4,19 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const jwtSecret = "61803f464c7e8cac7130fcd37cc06045f90c0a6e8fc2a1f09f043d742a31cfdd168522";
 
+function generateToken() {
+  let chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let token = '';
+  for(let i = 0; i < 40; i++) {
+      token += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return token;
+}
+
+
 exports.registerWithToken = async (req, res, next) => {
-  const { username, password, apiToken } = req.body;
+  const { username, password } = req.body;
+  let token = generateToken();
   if (password.length < 6) {
     return res.status(400).json({ message: "Password less than 6 characters" });
   }
@@ -13,7 +24,7 @@ exports.registerWithToken = async (req, res, next) => {
     await UserWithToken.create({
       username,
       password: hash,
-      apiToken,
+      apiToken: token,
     })
       .then((userWithToken) => {
         const maxAge = 3 * 60 * 60;
@@ -206,7 +217,7 @@ exports.getUsers = async (req, res, next) => {
     );
 };
 
-exports.getUserSelf = async (req, res, next) => {
+exports.getUserSelf = async (req, res, next) => {d
   const { id } = req.body;
   await User.findById(id)
     .then((user) => {
