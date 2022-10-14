@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 
 const { register, login, update, deleteUser, getUsers, getUserSelf, registerWithToken } = require("./auth");
-const { adminAuth, userAuth, userIsLoggedIn } = require("../middleware/auth");
+const { adminAuth, userAuth, userIsLoggedIn, userIsLoggedInTrueOrFalse } = require("../middleware/auth");
 
 router.route("/registerWithToken").post(registerWithToken);
-router.route("/register").post(register);
-router.route("/login").post(userIsLoggedIn, login);
+router.route("/register").post(userIsLoggedInTrueOrFalse, register);
+router.route("/login").post(login);
 //router.route("/admin").post(admin)
 router.route("/update").put(adminAuth, update);
 router.route("/deleteUser").delete(adminAuth, deleteUser);

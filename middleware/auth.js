@@ -41,7 +41,7 @@ exports.userAuth = (req, res, next) => {
     return res.status(401).json({ message: "Not authorized, token not available" });
   }
 };
-
+/* 
 exports.userIsLoggedIn = (req, res, next) => {
   const token = req.cookies.jwt;
   if (token) {
@@ -58,7 +58,7 @@ exports.userIsLoggedIn = (req, res, next) => {
           res.locals.title = "ayyy";
           req.title = "ayyy2"
           res.locals.user = "a";
-          req.user = token;
+          req.user = decodedToken.username;
           let logdetails = {
             id: "some-id",
             datetime: Date.now(),
@@ -80,6 +80,26 @@ exports.userIsLoggedIn = (req, res, next) => {
     res.logdetails= logdetails;
     //res.send({ "userNM2":"GeeksforGeeks"});
     res.userNM = "ahh";
+    next();
+  }
+};
+ */
+exports.userIsLoggedInTrueOrFalse = (req, res, next) => {
+  const token = req.cookies.jwt;
+  if (token) {
+    jwt.verify(token, jwtSecret, (err, decodedToken) => {
+      if (err) {
+        return res.status(401).json({ message: "Not authorized" });
+      } else {
+        req.isLoggedIn = true;  
+        req.user = decodedToken.username;
+
+        console.log()
+        next();
+      }
+    });
+  } else {
+    req.isLoggedIn = false;
     next();
   }
 };
