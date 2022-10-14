@@ -41,3 +41,45 @@ exports.userAuth = (req, res, next) => {
     return res.status(401).json({ message: "Not authorized, token not available" });
   }
 };
+
+exports.userIsLoggedIn = (req, res, next) => {
+  const token = req.cookies.jwt;
+  if (token) {
+    jwt.verify(token, jwtSecret, (err, decodedToken) => {
+      if (err) {
+        return res.status(401).json({ message: "Not authorized" });
+      } else {
+        if (decodedToken.role !== "Basic") {
+          return res.status(401).json({ message: "Not authorized" });
+        } else {
+          console.log('Time: %d', Date.now());
+          console.log("Token is : ");
+          console.log(token);
+          res.locals.title = "ayyy";
+          req.title = "ayyy2"
+          res.locals.user = "a";
+          req.user = token;
+          let logdetails = {
+            id: "some-id",
+            datetime: Date.now(),
+            path: '/path-in-url'
+          }
+          req.logdetails= logdetails;
+          //res.send({ "userNM2":"GeeksforGeeks"});
+          req.userNM = "ahh"
+          next();
+        }
+      }
+    });
+  } else {
+    let logdetails = {
+      id: "some-id",
+      datetime: Date.now(),
+      path: '/path-in-url'
+    }
+    res.logdetails= logdetails;
+    //res.send({ "userNM2":"GeeksforGeeks"});
+    res.userNM = "ahh";
+    next();
+  }
+};

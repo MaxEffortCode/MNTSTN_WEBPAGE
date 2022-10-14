@@ -3,7 +3,7 @@ const app = express()
 const PORT = 5000
 const connectDB = require("./db");
 const cookieParser = require("cookie-parser");
-const { adminAuth, userAuth } = require("./middleware/auth.js");
+const { adminAuth, userAuth, userIsLoggedIn } = require("./middleware/auth.js");
 //Connecting the Database
 connectDB();
 
@@ -25,14 +25,16 @@ app.use("/api/auth", require("./Auth/route"))
 //all paths with use cookieParser
 app.use(cookieParser());
 
-app.locals.title = 'My App';
+
+
+app.locals.title = 'UserNM';
 
 
 app.get("/home", (req, res) => res.render("home"))
 app.get("", (req, res) => res.render("home"))
 app.get("/register", (req, res) => res.render("register"))
 app.get("/registerWithToken", (req, res) => res.render("registerWithToken"))
-app.get("/login", (req, res) => res.render("login", {userNM : app.locals.title}))
+app.get("/login", userIsLoggedIn, (req, res) => res.render("login", {"userNM" : app.locals.title, "userFromReq": req.user, "logdetails":""}))
 app.get("/admin", adminAuth, (req, res) => res.render("admin"))
 app.get("/basic", userAuth, (req, res) => res.render("user"))
 app.get("/logout", (req, res) => {
