@@ -52,9 +52,14 @@ app.get('/getFile/:id', function (req, res) {
   console.log(req.params['id']);
 })
 
-app.get('/secFiles/:fileNum', function (req, res) {
-  let pathToFile = "./Sec_fiings/resources/companies/" + req.params['fileNum'];
-  res.download(pathToFile + ".zip", req.params['fileNum']);
+app.get('/secFiles/:fileNum', userIsLoggedInTrueOrFalse, function (req, res) {
+  if (req.isLoggedIn == true ){
+    let pathToFile = "./Sec_fiings/resources/companies/" + req.params['fileNum'];
+    res.download(pathToFile + ".zip", req.params['fileNum']);
+  }
+  else{
+    res.render("login", {"userNM" : req.title, "userFromReq": req.user, "logdetails":"", "isLoggedIn" : req.isLoggedIn})
+  }
   console.log(req.params['fileNum']);
   //Sec_fiings/resources/companies/1000032.zip
 })
