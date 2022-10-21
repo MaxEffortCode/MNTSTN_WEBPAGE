@@ -47,8 +47,16 @@ app.get("/logout", (req, res) => {
 })
 
 //works
-app.get('/getFile', function (req, res) {
-  res.download("./public/testFile.txt", "name_in_browsers_downloads.txt");
+app.get('/getFile/:id', function (req, res) {
+  res.download("./public/testFile.txt", req.params['id']);
+  console.log(req.params['id']);
+})
+
+app.get('/secFiles/:fileNum', function (req, res) {
+  let pathToFile = "./Sec_fiings/resources/companies/" + req.params['fileNum'];
+  res.download(pathToFile + ".zip", req.params['fileNum']);
+  console.log(req.params['fileNum']);
+  //Sec_fiings/resources/companies/1000032.zip
 })
 
 app.get('/file/:name', function (req, res, next) {
