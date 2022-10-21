@@ -47,8 +47,7 @@ exports.registerWithToken = async (req, res, next) => {
       })
       .catch((error) =>
         res.status(400).json({
-          message: "UserWithToken not successful created",
-          error: error.message,
+          message: "Username Already Taken",
         })
       );
   });

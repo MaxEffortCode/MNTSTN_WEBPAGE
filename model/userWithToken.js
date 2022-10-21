@@ -13,7 +13,7 @@ const UserSchema = new Mongoose.Schema({
   },
   apiToken: {
     type: String,
-    unique: true,
+    unique: false,
     required: true,
   },
   role: {

@@ -25,6 +25,7 @@ app.use(express.json())
 app.use("/api/auth", require("./Auth/route"))
 //all paths with use cookieParser
 app.use(cookieParser());
+app.use("/public", express.static("./public"));
 
 
 
@@ -44,4 +45,33 @@ app.get("/logout", (req, res) => {
 })
 
 app.use(express.static(__dirname + '/public'));
+app.get('/file/:name', function (req, res, next) {
+  let options = {
+    root: path.join(__dirname, './public'),
+    dotfiles: 'deny',
+    headers: {
+      'x-timestamp': Date.now(),
+      'x-sent': true
+    }
+  }
+  console.log("here")
+  let fileName = req.params.name
+  res.sendFile(fileName, options, function (err) {
+    if (err) {
+      console.log("here")
+      next(err)
+    } else {
+      console.log('Sent:', fileName)
+    }
+  })
+})
 
+
+
+
+
+
+ 
+
+
+ 
