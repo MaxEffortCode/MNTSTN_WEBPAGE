@@ -1,3 +1,4 @@
+
 const express = require("express")
 const app = express()
 const PORT = 5000
@@ -29,6 +30,7 @@ app.use("/public", express.static("./public"));
 
 
 
+
 app.locals.title = 'UserNM';
 
 
@@ -44,7 +46,11 @@ app.get("/logout", (req, res) => {
   res.redirect("/")
 })
 
-app.use(express.static(__dirname + '/public'));
+//works
+app.get('/getFile', function (req, res) {
+  res.download("./public/testFile.txt", "name_in_browsers_downloads.txt");
+})
+
 app.get('/file/:name', function (req, res, next) {
   let options = {
     root: path.join(__dirname, './public'),
@@ -67,11 +73,6 @@ app.get('/file/:name', function (req, res, next) {
 })
 
 
+//will break css and js if this line isn't at end of file
+app.use(express.static(__dirname + '/public'));
 
-
-
-
- 
-
-
- 
