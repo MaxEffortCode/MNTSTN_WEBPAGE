@@ -127,9 +127,9 @@
 
       const getUserToken = async () => {
         let thisUser = "<%= userFromReq %>";
-        console.log(" user (getUserToken) : " + thisUser + " aaa");
+        console.log(" user (getUserToken) : " + thisUser );
         const res = await fetch("/api/auth/getUserToken", {
-          method: "PUT",
+          method: "POST",
           body: JSON.stringify({ user: thisUser }),
           headers: { "Content-Type": "application/json" },
         });
@@ -140,7 +140,7 @@
         console.log("this is the status : " + status);
         console.log("Here is data : " + JSON.stringify(data));
 
-        return data["userToken"];
+        return data["user"]["apiToken"];
       };
 
       const updateUserToken = async () => {

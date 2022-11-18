@@ -257,3 +257,16 @@ exports.getUserSelf = async (req, res, next) => {
       res.status(401).json({ message: "Not successful", error: err.message })
     );
 };
+
+exports.getUserToken = async (req, res, next) => {
+  const { user } = req.body;
+
+  console.log("id : " + user);
+  await UserWithToken.findOne({ username : user })
+    .then((userWithToken) => { 
+      res.status(200).json({ user : userWithToken });
+    })
+    .catch((err) =>
+      res.status(401).json({ message: "Not successful", error: err.message })
+    );
+};
