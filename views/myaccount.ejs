@@ -127,7 +127,7 @@
 
       const getUserToken = async () => {
         let thisUser = "<%= userFromReq %>";
-        console.log(" user (getUserToken) : " + thisUser);
+        console.log(" user (getUserToken) : " + thisUser + " aaa");
         const res = await fetch("/api/auth/getUserToken", {
           method: "PUT",
           body: JSON.stringify({ user: thisUser }),
@@ -147,9 +147,9 @@
         let newToken = generateToken();
 
         let thisUser = "<%= userFromReq %>";
-        console.log("new token : " + newToken + " user (myacc) : " + thisUser);
+        console.log("new token : " + newToken + " user (updateUserToken) : " + thisUser);
         const res = await fetch("/api/auth/getUserSelf", {
-          method: "PUT",
+          method: "POST",
           body: JSON.stringify({ token: newToken, user: thisUser }),
           headers: { "Content-Type": "application/json" },
         });

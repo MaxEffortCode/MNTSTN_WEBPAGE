@@ -216,7 +216,7 @@ exports.getUsers = async (req, res, next) => {
     );
 };
 
-exports.getUserSelf = async (req, res, next) => {d
+/* exports.getUserSelf = async (req, res, next) => {
   const { id } = req.body;
   await User.findById(id)
     .then((user) => {
@@ -229,6 +229,29 @@ exports.getUserSelf = async (req, res, next) => {d
         return container;
       });
       res.status(200).json({ user: userFunction });
+    })
+    .catch((err) =>
+      res.status(401).json({ message: "Not successful", error: err.message })
+    );
+};
+ */
+exports.getUserSelf = async (req, res, next) => {
+  const { user } = req.body;
+  const { token } = req.body;
+  console.log("id : " + user + " token : " + token);
+  await UserWithToken.findOne({ username : user })
+    .then((userWithToken) => { 
+      userWithToken.apiToken = token;
+            userWithToken.save((err) => {
+              //Monogodb error checker
+              if (err) {
+                return res
+                  .status(400)
+                  .json({ message: "An error occurred", error: err.message });
+                process.exit(1);
+              }
+      res.status(200).json({ user : userWithToken });
+    });
     })
     .catch((err) =>
       res.status(401).json({ message: "Not successful", error: err.message })

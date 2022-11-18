@@ -93,6 +93,8 @@ exports.userIsLoggedInTrueOrFalse = (req, res, next) => {
       } else {
         req.isLoggedIn = true;  
         req.user = decodedToken.username;
+        req.userToken = token;
+        req.apiToken = decodedToken.apiToken;
 
         console.log(decodedToken.username)
         next();

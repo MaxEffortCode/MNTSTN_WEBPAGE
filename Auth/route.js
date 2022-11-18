@@ -12,5 +12,7 @@ router.route("/update").put(adminAuth, update);
 router.route("/deleteUser").delete(adminAuth, deleteUser);
 router.route("/getUsers").get(getUsers);
 router.route("/getUserSelf").get(userAuth, getUserSelf);
+router.route("/getUserSelf").post(getUserSelf);
+//router.route("/getUserToken").put(getUserToken);
 
 module.exports = router;

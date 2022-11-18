@@ -41,16 +41,20 @@ app.get("/registerWithToken", userIsLoggedInTrueOrFalse, (req, res) => res.rende
 app.get("/login", userIsLoggedInTrueOrFalse, (req, res) => res.render("login", {"userNM" : req.title, "userFromReq": req.user, "logdetails":"", "isLoggedIn" : req.isLoggedIn}))
 app.get("/admin", adminAuth, (req, res) => res.render("admin"))
 app.get("/basic", userAuth, (req, res) => res.render("user"))
+app.get("/payments", userAuth, (req, res) => res.render("payments"))
 app.get("/logout", (req, res) => {
   res.cookie("jwt", "", { maxAge: "1" })
   res.redirect("/")
 })
-
-//works
-app.get('/getFile/:id', function (req, res) {
-  res.download("./public/testFile.txt", req.params['id']);
-  console.log(req.params['id']);
-})
+//create middleware to grab user token
+app.get("/myaccount", userIsLoggedInTrueOrFalse, function (req, res) {
+  if (req.isLoggedIn == true ){
+    res.render("myaccount", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user, "userToken" : req.userToken, "apiToken" : req.apiToken});
+  }
+  else{
+    res.render("login", {"userNM" : req.title, "userFromReq": req.user, "logdetails":"", "isLoggedIn" : req.isLoggedIn})
+  }
+}) 
 
 app.get('/secFiles/:fileNum', userIsLoggedInTrueOrFalse, function (req, res) {
   if (req.isLoggedIn == true ){
