@@ -28,7 +28,7 @@
   background-color: rgb(149, 58, 58);
 }
 
-/* Create an active/current "tab button" class */
+/* Create an active/current "tab button" classs */
 .tab button.active {
   background-color: rgb(65, 172, 74);
 }
