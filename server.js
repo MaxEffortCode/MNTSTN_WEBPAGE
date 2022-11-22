@@ -1,12 +1,14 @@
-
 const express = require("express")
 const app = express()
 const PORT = 5000
 const connectDB = require("./db");
 const cookieParser = require("cookie-parser");
+const bodyParser = require('body-parser');
+const stripe = require('stripe')('sk_test_51M2mNpCyYVSsKZLoeOG3sbmhoo4n6Q1c9DBEYiMznjT7JrXS4eW2bcROZU2EBLTknFcJmhLqighHIYPMlbyNPUQa00GsQso4VK');
 const { adminAuth, userAuth, userIsLoggedIn, userIsLoggedInTrueOrFalse } = require("./middleware/auth.js");
 //Connecting the Database
 connectDB();
+
 
 //app.listen(PORT, () => console.log(`Server Connected to port! ${PORT}`))
 const server = app.listen(PORT, () =>
@@ -20,6 +22,7 @@ process.on("unhandledRejection", err => {
 
 app.set("view engine", "ejs")
 
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.json())
 //binding middleware to an instance of the app object
@@ -41,7 +44,7 @@ app.get("/registerWithToken", userIsLoggedInTrueOrFalse, (req, res) => res.rende
 app.get("/login", userIsLoggedInTrueOrFalse, (req, res) => res.render("login", {"userNM" : req.title, "userFromReq": req.user, "logdetails":"", "isLoggedIn" : req.isLoggedIn}))
 app.get("/admin", adminAuth, (req, res) => res.render("admin"))
 app.get("/basic", userAuth, (req, res) => res.render("user"))
-app.get("/payments", userAuth, (req, res) => res.render("payments"))
+app.get("/payments", userAuth, userIsLoggedInTrueOrFalse, (req, res) => res.render("payments", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
 app.get("/logout", (req, res) => {
   res.cookie("jwt", "", { maxAge: "1" })
   res.redirect("/")
@@ -89,6 +92,38 @@ app.get('/file/:name', function (req, res, next) {
   })
 })
 
+app.post("/charge", (req, res) => {
+  console.log("posted to charge");
+  console.log("req body : \n" + req.body);
+  //make this like the registerwithtoken routes
+  try {
+    stripe.customers
+      .create({
+        name: req.body.name,
+        email: req.body.email,
+        source: req.body.stripeToken
+      })
+      .then(() => {
+        console.log("created stripe customer");
+      })
+      .then(customer =>
+        stripe.charges.create({
+          amount: req.body.amount * 100,
+          currency: "usd",
+          customer: customer.id
+        })
+      )
+      .then(() => {
+        console.log("Charge Successful");
+        res.render("/home")
+      })
+      .catch(err => {
+        console.log("there was an error (server.js app.post): " + err)}
+        );
+  } catch (err) {
+    res.send(err);
+  }
+});
 
 //will break css and js if this line isn't at end of file
 app.use(express.static(__dirname + '/public'));
