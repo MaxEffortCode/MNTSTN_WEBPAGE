@@ -33,7 +33,7 @@ form.addEventListener('submit', e => {
   stripe.createToken(card).then(res => {
     if (res.error) errorEl.textContent = res.error.message;
     else {
-      console.log("res token : " + res.token);
+      console.log("(card.js) res token : " + res.token);
       stripeTokenHandler(res.token);
     }
   })

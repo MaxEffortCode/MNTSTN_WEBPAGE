@@ -92,19 +92,19 @@ app.get('/file/:name', function (req, res, next) {
   })
 })
 
-app.post("/charge", (req, res) => {
+//app.get("/home", userIsLoggedInTrueOrFalse, (req, res) => res.render("home", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
+
+app.post("/charge", userIsLoggedInTrueOrFalse, (req, res) => {
   console.log("posted to charge");
-  console.log("req body : \n" + req.body);
-  //make this like the registerwithtoken routes
+  console.log("req body : \n");
+  console.log(req.body);
+
   try {
     stripe.customers
       .create({
         name: req.body.name,
         email: req.body.email,
         source: req.body.stripeToken
-      })
-      .then(() => {
-        console.log("created stripe customer");
       })
       .then(customer =>
         stripe.charges.create({
@@ -115,7 +115,7 @@ app.post("/charge", (req, res) => {
       )
       .then(() => {
         console.log("Charge Successful");
-        res.render("/home")
+        res.render("home", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user})
       })
       .catch(err => {
         console.log("there was an error (server.js app.post): " + err)}
