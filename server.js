@@ -45,6 +45,7 @@ app.get("/login", userIsLoggedInTrueOrFalse, (req, res) => res.render("login", {
 app.get("/admin", adminAuth, (req, res) => res.render("admin"))
 app.get("/basic", userAuth, (req, res) => res.render("user"))
 app.get("/payments", userAuth, userIsLoggedInTrueOrFalse, (req, res) => res.render("payments", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
+app.get("/paymentcomplete", userAuth, userIsLoggedInTrueOrFalse, (req, res) => res.render("paymentcomplete", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
 app.get("/logout", (req, res) => {
   res.cookie("jwt", "", { maxAge: "1" })
   res.redirect("/")
@@ -115,7 +116,7 @@ app.post("/charge", userIsLoggedInTrueOrFalse, (req, res) => {
       )
       .then(() => {
         console.log("Charge Successful");
-        res.render("home", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user})
+        res.render("paymentcomplete", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user})
       })
       .catch(err => {
         console.log("there was an error (server.js app.post): " + err)}
