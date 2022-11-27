@@ -13,14 +13,41 @@ function generateToken() {
   return token;
 }
 
+function validatePassword( password ) {
+  //need to return error array and check if it's empty
+  var p = password;
+  errors = [];
+  if (p.length < 8) {
+      errors.push("Your password must be at least 8 characters");
+  }
+  if (p.search(/[a-z]/i) < 0) {
+      errors.push("Your password must contain at least one letter."); 
+  }
+  if (p.search(/[0-9]/) < 0) {
+      errors.push("Your password must contain at least one digit.");
+  }
+  if (errors.length > 0) {
+      return false;
+  }
+  return true;
+}
+
 
 exports.registerWithToken = async (req, res, next) => {
   const { username, password } = req.body;
-  console.log("username : \n" + username);
+  console.log("\n here \n")
+  console.log("\n validatePassword(password) ", validatePassword(password));
+  let passwordValid = validatePassword(password);
+  if (!passwordValid) {
+    res.render("registerWithToken", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user, "error" : "Password is not valid"});
+    return;
+  }
+
   let token = generateToken();
   if (password.length < 6) {
     return res.status(400).json({ message: "Password less than 6 characters" });
   }
+
   bcrypt.hash(password, 10).then(async (hash) => {
     await UserWithToken.create({
       username,
