@@ -76,7 +76,14 @@
                       <div class="d-flex flex-row align-items-center mb-4">
                         <i class="fas fa-key fa-lg me-3 fa-fw"></i>
                         <div class="form-outline flex-fill mb-0">
-                          <input type="password" id="confirmpassword" class="form-control" />
+                          <input 
+                            type="password"
+                            id="confirmpassword"
+                            class="form-control"
+                            aria-describedby="confirmPasswordhelp"
+                            placeholder="Confirm password"
+                            required 
+                          />
                           <label class="form-label" for="confirmpassword">Confirm your password</label>
                         </div>
                       </div>
@@ -120,9 +127,10 @@
       const username = document.querySelector("#username");
       const password = document.querySelector("#password");
       const confirmpassword = document.querySelector("#confirmpassword");
+      const agreement = document.querySelector("#termsagreement");
       const email = document.querySelector("#email");
       const display = document.querySelector(".error");
-      console.log("\nform ", form, "username ", username, "password", password, "display", display, "\n");
+      console.log("\nform ", form, "agreed ", agreement, "username ", username, "password", password, "display", display, "\n");
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
         display.textContent = "";
@@ -136,7 +144,8 @@
                 username: username.value, 
                 password: password.value,
                 email: email.value,
-                confirmpassword: confirmpassword.value
+                confirmpassword: confirmpassword.value,
+                agreement: agreement.checked
               }),
             headers: { "Content-Type": "application/json" },
           });

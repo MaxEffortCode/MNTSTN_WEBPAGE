@@ -5,54 +5,64 @@ const jwt = require("jsonwebtoken");
 const jwtSecret = "61803f464c7e8cac7130fcd37cc06045f90c0a6e8fc2a1f09f043d742a31cfdd168522";
 
 function generateToken() {
-  let chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let token = '';
-  for(let i = 0; i < 40; i++) {
-      token += chars[Math.floor(Math.random() * chars.length)];
+  let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let token = "";
+  for (let i = 0; i < 40; i++) {
+    token += chars[Math.floor(Math.random() * chars.length)];
   }
   return token;
 }
 
-function validatePassword( password ) {
+function validatePassword(password) {
   //need to return error array and check if it's empty
   var p = password;
   errors = [];
   if (p.length < 8) {
-      errors.push("Your password must be at least 8 characters");
+    errors.push("Your password must be at least 8 characters");
   }
   if (p.search(/[a-z]/i) < 0) {
-      errors.push("Your password must contain at least one letter."); 
+    errors.push("Your password must contain at least one letter.");
   }
   if (p.search(/[0-9]/) < 0) {
-      errors.push("Your password must contain at least one digit.");
+    errors.push("Your password must contain at least one digit.");
   }
   if (errors.length > 0) {
-      return false;
+    return errors;
   }
   return true;
 }
 
-
 exports.registerWithToken = async (req, res, next) => {
-  const { username, password } = req.body;
-  console.log("\n here \n")
-  console.log("\n validatePassword(password) ", validatePassword(password));
-  let passwordValid = validatePassword(password);
-  if (!passwordValid) {
-    res.render("registerWithToken", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user, "error" : "Password is not valid"});
-    return;
+  const { username, password, email, confirmpassword, agreement } = req.body;
+  console.log("registering user: \n" + JSON.stringify(req.body) + "\n");
+
+  if (agreement == false) {
+    return res.status(400).json({
+      message: "You must agree to the terms and conditions to register",
+    });
   }
+
+  let passwordValid = validatePassword(password);
+  if (passwordValid.length > 0) {
+    return res.status(400).json({
+      message: "There was an error " + passwordValid,
+    });
+  }
+  if (password !== confirmpassword) {
+    return res.status(400).json({
+      message: "Passwords do not match",
+    });
+  }
+
 
   let token = generateToken();
-  if (password.length < 6) {
-    return res.status(400).json({ message: "Password less than 6 characters" });
-  }
 
   bcrypt.hash(password, 10).then(async (hash) => {
     await UserWithToken.create({
       username,
       password: hash,
       apiToken: token,
+      email,
     })
       .then((userWithToken) => {
         const maxAge = 3 * 60 * 60;
@@ -75,7 +85,7 @@ exports.registerWithToken = async (req, res, next) => {
       })
       .catch((error) =>
         res.status(400).json({
-          message: "Username Already Taken",
+          message: "Username Already Taken" + error.message,
         })
       );
   });
@@ -93,13 +103,9 @@ exports.register = async (req, res, next) => {
     })
       .then((user) => {
         const maxAge = 3 * 60 * 60;
-        const token = jwt.sign(
-          { id: user._id, username, role: user.role },
-          jwtSecret,
-          {
-            expiresIn: maxAge, // 3hrs
-          }
-        );
+        const token = jwt.sign({ id: user._id, username, role: user.role }, jwtSecret, {
+          expiresIn: maxAge, // 3hrs
+        });
         res.cookie("jwt", token, {
           httpOnly: true,
           maxAge: maxAge * 1000,
@@ -142,13 +148,9 @@ exports.login = async (req, res, next) => {
       bcrypt.compare(password, user.password).then(function (result) {
         if (result) {
           const maxAge = 3 * 60 * 60;
-          const token = jwt.sign(
-            { id: user._id, username, role: user.role },
-            jwtSecret,
-            {
-              expiresIn: maxAge, // 3hrs in sec
-            }
-          );
+          const token = jwt.sign({ id: user._id, username, role: user.role }, jwtSecret, {
+            expiresIn: maxAge, // 3hrs in sec
+          });
           res.cookie("jwt", token, {
             httpOnly: true,
             maxAge: maxAge * 1000, // 3hrs in ms
@@ -186,9 +188,7 @@ exports.update = async (req, res, next) => {
             user.save((err) => {
               //Monogodb error checker
               if (err) {
-                return res
-                  .status("400")
-                  .json({ message: "An error occurred", error: err.message });
+                return res.status("400").json({ message: "An error occurred", error: err.message });
                 process.exit(1);
               }
               res.status("201").json({ message: "Update successful", user });
@@ -198,9 +198,7 @@ exports.update = async (req, res, next) => {
           }
         })
         .catch((error) => {
-          res
-            .status(400)
-            .json({ message: "An error occurred", error: error.message });
+          res.status(400).json({ message: "An error occurred", error: error.message });
         });
     } else {
       res.status(400).json({
@@ -216,14 +214,8 @@ exports.deleteUser = async (req, res, next) => {
   const { id } = req.body;
   await User.findById(id)
     .then((user) => user.remove())
-    .then((user) =>
-      res.status(201).json({ message: "User successfully deleted", user })
-    )
-    .catch((error) =>
-      res
-        .status(400)
-        .json({ message: "An error occurred", error: error.message })
-    );
+    .then((user) => res.status(201).json({ message: "User successfully deleted", user }))
+    .catch((error) => res.status(400).json({ message: "An error occurred", error: error.message }));
 };
 
 exports.getUsers = async (req, res, next) => {
@@ -239,62 +231,35 @@ exports.getUsers = async (req, res, next) => {
       });
       res.status(200).json({ user: userFunction });
     })
-    .catch((err) =>
-      res.status(401).json({ message: "Not successful", error: err.message })
-    );
+    .catch((err) => res.status(401).json({ message: "Not successful", error: err.message }));
 };
 
-/* exports.getUserSelf = async (req, res, next) => {
-  const { id } = req.body;
-  await User.findById(id)
-    .then((user) => {
-      const userFunction = user.map((user) => {
-        const container = {};
-        container.username = user.username;
-        container.role = user.role;
-        container.id = user._id;
-
-        return container;
-      });
-      res.status(200).json({ user: userFunction });
-    })
-    .catch((err) =>
-      res.status(401).json({ message: "Not successful", error: err.message })
-    );
-};
- */
 exports.getUserSelf = async (req, res, next) => {
   const { user } = req.body;
   const { token } = req.body;
   console.log("id : " + user + " token : " + token);
-  await UserWithToken.findOne({ username : user })
-    .then((userWithToken) => { 
+  await UserWithToken.findOne({ username: user })
+    .then((userWithToken) => {
       userWithToken.apiToken = token;
-            userWithToken.save((err) => {
-              //Monogodb error checker
-              if (err) {
-                return res
-                  .status(400)
-                  .json({ message: "An error occurred", error: err.message });
-                process.exit(1);
-              }
-      res.status(200).json({ user : userWithToken });
-    });
+      userWithToken.save((err) => {
+        //Monogodb error checker
+        if (err) {
+          return res.status(400).json({ message: "An error occurred", error: err.message });
+          process.exit(1);
+        }
+        res.status(200).json({ user: userWithToken });
+      });
     })
-    .catch((err) =>
-      res.status(401).json({ message: "Not successful", error: err.message })
-    );
+    .catch((err) => res.status(401).json({ message: "Not successful", error: err.message }));
 };
 
 exports.getUserToken = async (req, res, next) => {
   const { user } = req.body;
 
   console.log("id : " + user);
-  await UserWithToken.findOne({ username : user })
-    .then((userWithToken) => { 
-      res.status(200).json({ user : userWithToken });
+  await UserWithToken.findOne({ username: user })
+    .then((userWithToken) => {
+      res.status(200).json({ user: userWithToken });
     })
-    .catch((err) =>
-      res.status(401).json({ message: "Not successful", error: err.message })
-    );
+    .catch((err) => res.status(401).json({ message: "Not successful", error: err.message }));
 };
