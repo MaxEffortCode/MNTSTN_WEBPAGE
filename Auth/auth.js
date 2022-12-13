@@ -4,6 +4,15 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const jwtSecret = "61803f464c7e8cac7130fcd37cc06045f90c0a6e8fc2a1f09f043d742a31cfdd168522";
 
+
+function sendEmailValidation(email) {
+  //send email
+  
+  
+  //return true if email was sent
+  return true;
+}
+
 function generateToken() {
   let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   let token = "";
@@ -127,6 +136,7 @@ exports.register = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   const { username, password } = req.body;
+  console.log("logging in user: \n" + JSON.stringify(req.body) + "\n");
 
   // Check if username and password is provided
   if (!username || !password) {
@@ -136,7 +146,8 @@ exports.login = async (req, res, next) => {
   }
 
   try {
-    const user = await User.findOne({ username });
+    const user = await UserWithToken.findOne({ username });
+    console.log("user: " + user);
 
     if (!user) {
       res.status(400).json({
