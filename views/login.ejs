@@ -8,61 +8,87 @@
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
       crossorigin="anonymous"
     />
-    <title>Login Page </title>
+    <title>Login</title>
   </head>
   <%- include('./partials/head') %> <%- include('./partials/header') %>
-  <body>
+  <body style="background-color: #1a202c;">
     
-    <form>
-      <div class="error" style="background-color: red"></div>
-      <div class="container">
-        
-        <div class="form-group">
-          <div class="row justify-content-center">
-            
-            <div class="col col-10">
-              <h1>user: <%= userFromReq %>  </h1>
-              <h1>Login<%= logdetails %> <%= userNM %> </h1>
-              <br/>
-              <label for="username">Username</label>
-              <input
-                type="text"
-                class="form-control"
-                aria-describedby="emailHelp"
-                placeholder="Enter email"
-                id="username"
-                required
-              />
-              <small id="emailHelp" class="form-text text-muted">
-                We'll never share your email with anyone else.
-              </small>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="row justify-content-center">
-            <div class="col col-10">
-              <label for="password">Password</label>
-              <input type="password" class="form-control" id="password" placeholder="Password" />
-            </div>
-          </div>
-        </div>
-        <div class="form-check">
-          <div class="row justify-content-center">
-            <div class="col col-10">
-              <br />
-              <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
-
-              <div class="col col-10">
-                <a href="/register">Don't have an accout? Register</a>
+    <section class="vh-100" style="background-color: #1a202c;">
+      <div class="container h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col-lg-12 col-xl-11">
+            <div class="card text-black" style="border-radius: 25px;">
+              <div class="card-body p-md-5">
+                
+                <div class="row justify-content-center">
+                  <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+    
+                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Login</p>
+    
+                    <form class="mx-1 mx-md-4">
+                      <div class="error d-flex flex-row align-items-center mb-4" style="background-color: red"></div>
+                      <div class="d-flex flex-row align-items-center mb-4">
+                        <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                        <div class="form-outline flex-fill mb-0">
+                          <input
+                            type="text"
+                            id="username"
+                            class="form-control"
+                            aria-describedby="usernameHelp"
+                            placeholder="Enter a username"
+                            required
+                          />
+                          <label class="form-label" for="username">User Name</label>
+                        </div>
+                      </div>
+                      
+    
+                      <div class="d-flex flex-row align-items-center mb-4">
+                        <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                        <div class="form-outline flex-fill mb-0">
+                          <input
+                            type="password"
+                            id="password"
+                            class="form-control"
+                            aria-describedby="passwordhelp"
+                            placeholder="Enter password"
+                            required
+                          />
+                          <label class="form-label" for="password">Password</label>
+                        </div>
+                      </div>
+                      <div class="form-check">
+                        <div class="row justify-content-center">
+                          <div class="col col-10">
+                            <br />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                        <button type="submit" class="btn btn-primary btn-lg">Sign In</button>                      </div>
+                      
+                    </form>
+                    <a href="/registerWithToken" class="row justify-content-center">Need an account?</a>
+                    <br />
+                    <a href="/BrokenLink" class="row justify-content-center">Trouble logging in?</a>
+                    <br />
+                    <a href="https://pixabay.com/users/jhonatan_perez-4855933/" class="row justify-content-center">Where did the dinosaur come from?</a>
+    
+                  </div>
+                  
+                  <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2" style="text-align:center">
+                    
+                    <img src="./public/images/dinosaur-3172048.svg"
+                      class="img-fluid" alt="Sample image">
+                      
+                  </div>
+                </div>
               </div>
+            </div>
           </div>
         </div>
-        
       </div>
-    </form>
+    </section>
     
     <script>
       const form = document.querySelector("form");
