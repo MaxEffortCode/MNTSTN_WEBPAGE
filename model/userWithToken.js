@@ -30,6 +30,14 @@ const UserSchema = new Mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  lastLogin: {
+    type: Date,
+    default: Date.now,
+  },
+  apiRequests: {
+    type: Number,
+    default: 0,
+  },
 })
 
 const UserWithToken = Mongoose.model("userwithtoken", UserSchema)

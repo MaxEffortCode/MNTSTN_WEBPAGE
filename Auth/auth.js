@@ -247,6 +247,7 @@ exports.getUsers = async (req, res, next) => {
 
 //need to find way of getting objecrt id from username
 //also this should use the cache token not a sent username
+//we should add object Id to the array element
 exports.getUserSelf = async (req, res, next) => {
   const { user } = req.body;
   const { token } = req.body;
