@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const jwtSecret = "61803f464c7e8cac7130fcd37cc06045f90c0a6e8fc2a1f09f043d742a31cfdd168522";
 
 
+
 function sendEmailValidation(email) {
   //send email
   
@@ -62,7 +63,6 @@ exports.registerWithToken = async (req, res, next) => {
       message: "Passwords do not match",
     });
   }
-
 
   let token = generateToken();
 
@@ -245,6 +245,8 @@ exports.getUsers = async (req, res, next) => {
     .catch((err) => res.status(401).json({ message: "Not successful", error: err.message }));
 };
 
+//need to find way of getting objecrt id from username
+//also this should use the cache token not a sent username
 exports.getUserSelf = async (req, res, next) => {
   const { user } = req.body;
   const { token } = req.body;

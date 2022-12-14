@@ -39,7 +39,6 @@ app.locals.title = 'UserNM';
 
 app.get("/home", userIsLoggedInTrueOrFalse, (req, res) => res.render("home", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
 app.get("", userIsLoggedInTrueOrFalse, (req, res) => res.render("home", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
-app.get("/register", userIsLoggedInTrueOrFalse, (req, res) => res.render("register", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
 app.get("/registerWithToken", userIsLoggedInTrueOrFalse, (req, res) => res.render("registerWithToken", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
 app.get("/login", userIsLoggedInTrueOrFalse, (req, res) => res.render("login", {"userNM" : req.title, "userFromReq": req.user, "logdetails":"", "isLoggedIn" : req.isLoggedIn}))
 app.get("/admin", adminAuth, (req, res) => res.render("admin"))

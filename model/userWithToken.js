@@ -11,6 +11,11 @@ const UserSchema = new Mongoose.Schema({
     minlength: 6,
     required: true,
   },
+  email: {
+    type: String,
+    unique: true,
+    required: true,
+  },
   apiToken: {
     type: String,
     unique: false,
@@ -20,6 +25,10 @@ const UserSchema = new Mongoose.Schema({
     type: String,
     default: "Basic",
     required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
 })
 
