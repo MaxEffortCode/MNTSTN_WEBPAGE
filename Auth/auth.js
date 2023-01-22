@@ -3,15 +3,60 @@ const UserWithToken = require("../model/userWithToken");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const jwtSecret = "61803f464c7e8cac7130fcd37cc06045f90c0a6e8fc2a1f09f043d742a31cfdd168522";
+const Mailjet = require('node-mailjet');
+const MJ_APIKEY_PUBLIC='19ad40069c73f1881c99383c2381785b';
+const MJ_APIKEY_PRIVATE='e36595c0b8a551c4690d222d80c09b40';
+//need to fix plain text passwords in jwt secret and email validation
+//need to make email validation async works for now but not error resistant
 
-
-
-function sendEmailValidation(email) {
+function sendEmailValidation(email, username) {
   //send email
-  
-  
+  const maxAge = 3 * 60 * 60 * 1000;
+
+
+  const mailjet = Mailjet.apiConnect(
+    MJ_APIKEY_PUBLIC,
+    MJ_APIKEY_PRIVATE,
+    {
+      config: {},
+      options: {}
+    } 
+  );
+  const request = mailjet
+        .post('send', { version: 'v3.1' })
+        .request({
+          Messages: [
+            {
+              From: {
+                Email: "ceo@bandbcustomsolutions.com",
+                Name: "Mailjet Pilot"
+              },
+              To: [
+                {
+                  Email: email,
+                  Name: username
+                }
+              ],
+              Subject: "EZ Sec API - Your Email Validation Code",
+              TextPart: "Thank you for registering with EZ Sec API.",
+              HTMLPart: "<h3>Thank you for registering with EZ Sec API. click below to finish verification<br /> <a href=\"http://localhost:5000/verify\">Verify</a>!</h3><br />or copy and paste this link into your browser: http://localhost:5000/verify",
+            }
+          ]
+        })
+
+  request
+      .then((result) => {
+          console.log("email sent good: \n" + result.body)
+          return true;  
+      })
+      .catch((err) => {
+          console.log("email sent bad: \n" + err.statusCode)
+          return false;
+      })
+
+
   //return true if email was sent
-  return true;
+  
 }
 
 function generateToken() {
@@ -86,11 +131,21 @@ exports.registerWithToken = async (req, res, next) => {
           httpOnly: true,
           maxAge: maxAge * 1000,
         });
+        console.log("Send email confirmation here: \n" + userWithToken);
+        emailSent = sendEmailValidation(userWithToken.email, username);
+        //emailSent = true;
+        if (emailSent == true) {
+          console.log("Email Sent Successfully");
+        }
+        else {
+          console.log("Email Failed to Send");
+        }
         res.status(201).json({
           message: "UserWithToken successfully created",
           user: userWithToken._id,
           role: userWithToken.role,
         });
+      
       })
       .catch((error) =>
         res.status(400).json({
