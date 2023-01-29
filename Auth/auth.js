@@ -9,10 +9,10 @@ const MJ_APIKEY_PRIVATE='e36595c0b8a551c4690d222d80c09b40';
 //need to fix plain text passwords in jwt secret and email validation
 //need to make email validation async works for now but not error resistant
 
-function sendEmailValidation(email, username) {
+function sendEmailValidation(email, username, emailToken) {
   //send email
-  const maxAge = 3 * 60 * 60 * 1000;
 
+  HTMLPart = `<h3>Thank you for registering with EZ Sec API. click below to finish verification<br /> <a href="http://localhost:5000/verify/${emailToken}">Verify</a>!</h3><br />or copy and paste this link into your browser: http://localhost:5000/verify/${emailToken}<br />If you did not register with EZ Sec API please ignore this email.`;
 
   const mailjet = Mailjet.apiConnect(
     MJ_APIKEY_PUBLIC,
@@ -29,7 +29,7 @@ function sendEmailValidation(email, username) {
             {
               From: {
                 Email: "ceo@bandbcustomsolutions.com",
-                Name: "Mailjet Pilot"
+                Name: "EZ Sec API"
               },
               To: [
                 {
@@ -39,7 +39,7 @@ function sendEmailValidation(email, username) {
               ],
               Subject: "EZ Sec API - Your Email Validation Code",
               TextPart: "Thank you for registering with EZ Sec API.",
-              HTMLPart: "<h3>Thank you for registering with EZ Sec API. click below to finish verification<br /> <a href=\"http://localhost:5000/verify\">Verify</a>!</h3><br />or copy and paste this link into your browser: http://localhost:5000/verify",
+              HTMLPart: HTMLPart,
             }
           ]
         })
@@ -89,7 +89,19 @@ function validatePassword(password) {
 
 exports.registerWithToken = async (req, res, next) => {
   const { username, password, email, confirmpassword, agreement } = req.body;
+  emailToken = generateToken();
   console.log("registering user: \n" + JSON.stringify(req.body) + "\n");
+  if (!username || !password || !email || !confirmpassword) {
+    return res.status(400).json({
+      message: "Please fill out all fields",
+    });
+  }
+  if (username.length < 3) {
+    return res.status(400).json({
+      message: "Username must be at least 3 characters",
+    });
+  }
+
 
   if (agreement == false) {
     return res.status(400).json({
@@ -117,6 +129,7 @@ exports.registerWithToken = async (req, res, next) => {
       password: hash,
       apiToken: token,
       email,
+      emailToken,
     })
       .then((userWithToken) => {
         const maxAge = 3 * 60 * 60;
@@ -132,7 +145,7 @@ exports.registerWithToken = async (req, res, next) => {
           maxAge: maxAge * 1000,
         });
         console.log("Send email confirmation here: \n" + userWithToken);
-        emailSent = sendEmailValidation(userWithToken.email, username);
+        emailSent = sendEmailValidation(userWithToken.email, username, emailToken);
         //emailSent = true;
         if (emailSent == true) {
           console.log("Email Sent Successfully");

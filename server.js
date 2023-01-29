@@ -5,7 +5,7 @@ const connectDB = require("./db");
 const cookieParser = require("cookie-parser");
 const bodyParser = require('body-parser');
 const stripe = require('stripe')('sk_test_51M2mNpCyYVSsKZLoeOG3sbmhoo4n6Q1c9DBEYiMznjT7JrXS4eW2bcROZU2EBLTknFcJmhLqighHIYPMlbyNPUQa00GsQso4VK');
-const { adminAuth, userAuth, userIsLoggedIn, userIsLoggedInTrueOrFalse, updateUserWithTokenApiReq } = require("./middleware/auth.js");
+const { adminAuth, userAuth, userIsLoggedIn, userIsLoggedInTrueOrFalse, updateUserWithTokenApiReq, emailValidation } = require("./middleware/auth.js");
 //Connecting the Database
 connectDB();
 
@@ -57,7 +57,14 @@ app.get("/myaccount", userIsLoggedInTrueOrFalse, function (req, res) {
   else{
     res.render("login", {"userNM" : req.title, "userFromReq": req.user, "logdetails":"", "isLoggedIn" : req.isLoggedIn})
   }
-}) 
+})
+
+app.get("/verify/:token", emailValidation, function (req, res) {
+
+  res.render("verify", {"token" : req.params.token});
+}
+)
+
 
 //need to make middleware to add a time of api call to the userwithtoken model
 app.get('/secFiles/:fileNum', updateUserWithTokenApiReq, userIsLoggedInTrueOrFalse, function (req, res) {

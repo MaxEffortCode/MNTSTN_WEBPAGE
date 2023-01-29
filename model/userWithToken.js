@@ -38,6 +38,14 @@ const UserSchema = new Mongoose.Schema({
     type: Number,
     default: 0,
   },
+  emailToken: {
+    type: String,
+    default: "",
+  },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const UserWithToken = Mongoose.model("userwithtoken", UserSchema)

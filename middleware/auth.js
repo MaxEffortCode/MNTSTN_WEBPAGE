@@ -136,3 +136,24 @@ exports.updateUserWithTokenApiReq = async (req, res, next) => {
     return res.status(401).json({ message: "Not authorized, token not available" });
   }
 };
+
+//needs look up the token and see which user it belongs to
+//then it needs to update a "isVarified" field in (which needs to be created) in
+//the userwithtoken model in the database
+exports.emailValidation = async (req, res, next) => {
+  const token = req.params.token
+  UserWithToken.findOne({ emailToken: token })
+    .then((userWithToken) => {
+      userWithToken.isVerified = true;
+      userWithToken.save((err) => {
+        //Monogodb error checker
+        if (err) {
+          return res.status(400).json({ message: "An error occurred", error: err.message });
+        }
+        next();
+        //res.status(200).json({ user: userWithToken });
+      });
+    })
+    .catch((err) => res.status(401).json({ message: "Not successful", error: err.message }));
+
+};
