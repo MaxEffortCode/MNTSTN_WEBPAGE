@@ -38,13 +38,16 @@ app.locals.title = 'UserNM';
 
 
 app.get("/home", userIsLoggedInTrueOrFalse, (req, res) => res.render("home", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
+app.get("/index", userIsLoggedInTrueOrFalse, (req, res) => res.render("index", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
+
 app.get("", userIsLoggedInTrueOrFalse, (req, res) => res.render("home", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
-app.get("/registerWithToken", userIsLoggedInTrueOrFalse, (req, res) => res.render("registerWithToken", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
+app.get("/register", userIsLoggedInTrueOrFalse, (req, res) => res.render("registerWithToken", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
 app.get("/login", userIsLoggedInTrueOrFalse, (req, res) => res.render("login", {"userNM" : req.title, "userFromReq": req.user, "logdetails":"", "isLoggedIn" : req.isLoggedIn}))
 app.get("/admin", adminAuth, (req, res) => res.render("admin"))
 app.get("/basic", userAuth, (req, res) => res.render("user"))
 app.get("/payments", userAuth, userIsLoggedInTrueOrFalse, (req, res) => res.render("payments", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
 app.get("/paymentcomplete", userAuth, userIsLoggedInTrueOrFalse, (req, res) => res.render("paymentcomplete", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
+
 app.get("/logout", (req, res) => {
   res.cookie("jwt", "", { maxAge: "1" })
   res.redirect("/")
@@ -60,7 +63,6 @@ app.get("/myaccount", userIsLoggedInTrueOrFalse, function (req, res) {
 })
 
 app.get("/verify/:token", emailValidation, function (req, res) {
-
   res.render("verify", {"token" : req.params.token});
 }
 )
