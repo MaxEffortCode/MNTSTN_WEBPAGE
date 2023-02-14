@@ -39,6 +39,7 @@ app.locals.title = 'UserNM';
 
 app.get("/home", userIsLoggedInTrueOrFalse, (req, res) => res.render("home", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
 app.get("/index", userIsLoggedInTrueOrFalse, (req, res) => res.render("index", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
+app.get("/about", userIsLoggedInTrueOrFalse, (req, res) => res.render("about", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
 
 app.get("", userIsLoggedInTrueOrFalse, (req, res) => res.render("home", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
 app.get("/register", userIsLoggedInTrueOrFalse, (req, res) => res.render("registerWithToken", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
