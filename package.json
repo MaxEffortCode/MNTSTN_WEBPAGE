@@ -52,6 +52,7 @@
     "react-scripts": "5.0.1",
     "react-syntax-highlighter": "15.4.5",
     "stripe": "^11.1.0",
+    "vm2": "^3.9.14",
     "web-vitals": "1.0.1"
   },
   "scripts": {
