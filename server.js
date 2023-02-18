@@ -141,17 +141,7 @@ app.post("/charge", userIsLoggedInTrueOrFalse, (req, res) => {
   }
 });
 
-app.post('/execute', (req, res) => {
-  const code = req.body.message;
-  const vm = new NodeVM({
-    require: {
-        external: true,
-        root: './'
-    }
-  });
-  const result = vm.run(code, 'vm.js');
-  res.send(result);
-});
+
 
 //will break css and js if this line isn't at end of file
 app.use(express.static(__dirname + '/public'));

@@ -1,21 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Bootstrap Form Example</title>
+    <title>Secret Testing Page</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
   </head>
   <body>
     <div class="container mt-5">
-      <h1>Bootstrap Form Example</h1>
+      <h1>Code Example</h1>
       <form id="my-form">
-        <div class="form-group">
-          <label for="inputName">Name:</label>
-          <input type="text" class="form-control" id="inputName" name="name" placeholder="Enter your name">
-        </div>
-        <div class="form-group">
-          <label for="inputEmail">Email address:</label>
-          <input type="email" class="form-control" id="inputEmail" name="email" placeholder="Enter your email">
-        </div>
         <div class="form-group">
           <label for="inputMessage">Message:</label>
           <textarea class="form-control" id="inputMessage" name="message" rows="3" placeholder="Enter your message"></textarea>
@@ -25,25 +17,26 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-      $('#my-form').submit(function(event) {
-        event.preventDefault();
-        const formData = {
-          name: $('#inputName').val(),
-          email: $('#inputEmail').val(),
-          message: $('#inputMessage').val()
-        };
-        $.ajax({
-          url: '/execute',
-          method: 'POST',
-          data: formData,
-          success: function(result) {
-            console.log(result);
-          },
-          error: function(xhr, status, error) {
+        const form = document.getElementById('my-form');
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          const formData = new FormData(form);
+          userCode = formData.get('message');
+          try {
+            const res = await fetch('/api/auth/execute', {
+              method: 'POST',
+              body: JSON.stringify({
+                message: userCode,
+              }),
+            headers: { "Content-Type": "application/json" },
+            });
+            const result = await res.json();
+            console.log('success');
+            console.log("this is the result: " +JSON.stringify(result));
+          } catch (error) {
             console.error(error);
           }
         });
-      });
     </script>
   </body>
 </html>

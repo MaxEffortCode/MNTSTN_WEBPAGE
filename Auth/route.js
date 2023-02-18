@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { register, login, update, deleteUser, getUsers, getUserSelf, registerWithToken, getUserToken } = require("./auth");
+const { register, login, update, deleteUser, getUsers, getUserSelf, registerWithToken, getUserToken, execute } = require("./auth");
 const { adminAuth, userAuth, userIsLoggedIn, userIsLoggedInTrueOrFalse } = require("../middleware/auth");
 
 router.route("/registerWithToken").post(registerWithToken);
@@ -14,5 +14,6 @@ router.route("/getUsers").get(getUsers);
 router.route("/getUserSelf").get(userAuth, getUserSelf);
 router.route("/getUserSelf").post(getUserSelf);
 router.route("/getUserToken").post(getUserToken);
+router.route("/execute").post(execute);
 
 module.exports = router;
