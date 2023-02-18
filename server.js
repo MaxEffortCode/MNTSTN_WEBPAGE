@@ -1,8 +1,11 @@
+const {NodeVM} = require('vm2');
 const express = require("express")
+
 const app = express()
 const PORT = 5000
 const connectDB = require("./db");
 const cookieParser = require("cookie-parser");
+
 const bodyParser = require('body-parser');
 const stripe = require('stripe')('sk_test_51M2mNpCyYVSsKZLoeOG3sbmhoo4n6Q1c9DBEYiMznjT7JrXS4eW2bcROZU2EBLTknFcJmhLqighHIYPMlbyNPUQa00GsQso4VK');
 const { adminAuth, userAuth, userIsLoggedIn, userIsLoggedInTrueOrFalse, updateUserWithTokenApiReq, emailValidation } = require("./middleware/auth.js");
@@ -48,6 +51,8 @@ app.get("/admin", adminAuth, (req, res) => res.render("admin"))
 app.get("/basic", userAuth, (req, res) => res.render("user"))
 app.get("/payments", userAuth, userIsLoggedInTrueOrFalse, (req, res) => res.render("payments", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
 app.get("/paymentcomplete", userAuth, userIsLoggedInTrueOrFalse, (req, res) => res.render("paymentcomplete", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
+app.get("/tester", userIsLoggedInTrueOrFalse, (req, res) => res.render("tester", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
+
 
 app.get("/logout", (req, res) => {
   res.cookie("jwt", "", { maxAge: "1" })
@@ -134,6 +139,18 @@ app.post("/charge", userIsLoggedInTrueOrFalse, (req, res) => {
   } catch (err) {
     res.send(err);
   }
+});
+
+app.post('/execute', (req, res) => {
+  const code = req.body.message;
+  const vm = new NodeVM({
+    require: {
+        external: true,
+        root: './'
+    }
+  });
+  const result = vm.run(code, 'vm.js');
+  res.send(result);
 });
 
 //will break css and js if this line isn't at end of file
