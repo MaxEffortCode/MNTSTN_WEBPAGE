@@ -347,38 +347,30 @@ exports.getUserToken = async (req, res, next) => {
     .catch((err) => res.status(401).json({ message: "Not successful", error: err.message }));
 };
 
-/* exports.execute = async (req, res, next) => {
-  const code = req.body.message;
-  console.log("this is code" + JSON.stringify(code));
-  const vm = new NodeVM({
-    require: {
-        external: true,
-        root: './'
-    }
-  });
-  //wtf is wm.run returning
-  const result = vm.run(code, 'vm.js');
-  console.log("this is result: " + JSON.stringify(result));
-  res.send(result);
-}; */
+
 
 exports.execute = async (req, res, next) => {
   const code = req.body.message;
   const vm = new NodeVM({
     require: {
       external: true,
-      
-      root: './'
+      root: './',
+      mock: {
+        fs: {
+            readFileSync: () => 'Nice try!'
+        }
+      }
     }
   });
-  
+  //check sandbox.js for more info
   try {
     //const code = 'result = 1 + 2;';
     console.log("this is code" + JSON.stringify(code));
-    const result = vm.run(`module.exports = function() { return ${code}; }`, 'vm.js')();
+    const result = vm.run(`module.exports = function() { ${code}; }`, 'vm.js')();
     console.log("this is result: " + JSON.stringify(result));
     //res.send(result);
     console.log("--------------------");
+
     res.status(200).json({ userCodeReturn : result });
   } catch (err) {
     console.error(err);

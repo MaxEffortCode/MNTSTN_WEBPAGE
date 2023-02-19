@@ -14,14 +14,17 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
+      <div id="codeReturn" class="d-flex flex-row align-items-center mb-4"></div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        const display = document.querySelector("#codeReturn");
         const form = document.getElementById('my-form');
         form.addEventListener('submit', async (event) => {
           event.preventDefault();
           const formData = new FormData(form);
           userCode = formData.get('message');
+          display.textContent = "";
           try {
             const res = await fetch('/api/auth/execute', {
               method: 'POST',
@@ -31,10 +34,13 @@
             headers: { "Content-Type": "application/json" },
             });
             const result = await res.json();
+            if (res.status === 200) {
+                return (display.textContent = `Your result (basicly zybooks): ${JSON.stringify(result.userCodeReturn)}`);
+              }
             console.log('success');
             console.log("this is the result: " +JSON.stringify(result));
-          } catch (error) {
-            console.error(error);
+          } catch (err) {
+            console.error(err);
           }
         });
     </script>
