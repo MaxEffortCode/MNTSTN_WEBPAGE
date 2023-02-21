@@ -373,7 +373,9 @@ exports.execute = async (req, res, next) => {
 
     res.status(200).json({ userCodeReturn : result });
   } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
+    //make a response to send the top level error to the user
+    const error = err.stack.split("at")[0];
+    console.log("this is error: " + JSON.stringify(error));
+    res.status(500).json({ userCodeReturn : error });
   }
 };

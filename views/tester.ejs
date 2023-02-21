@@ -9,12 +9,13 @@
       <h1>Code Example</h1>
       <form id="my-form">
         <div class="form-group">
-          <label for="inputMessage">Message:</label>
+          <label for="inputMessage">Try it yourself:</label>
           <textarea class="form-control" id="inputMessage" name="message" rows="3" placeholder="Enter your message"></textarea>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-success" >Run</button>
       </form>
-      <div id="codeReturn" class="d-flex flex-row align-items-center mb-4"></div>
+      <div class="d-flex p-2"> <div id="codeReturn" class="d-flex flex-row align-items-center mb-4"></div></div>
+     
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -34,8 +35,8 @@
             headers: { "Content-Type": "application/json" },
             });
             const result = await res.json();
-            if (res.status === 200) {
-                return (display.textContent = `Your result (basicly zybooks): ${JSON.stringify(result.userCodeReturn)}`);
+            if (res.status === 200 || res.status === 201 || res.status === 500) {
+                return (display.textContent = `Your result: ${JSON.stringify(result.userCodeReturn)}`);
               }
             console.log('success');
             console.log("this is the result: " +JSON.stringify(result));
