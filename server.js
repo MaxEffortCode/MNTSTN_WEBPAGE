@@ -75,7 +75,7 @@ app.get("/verify/:token", emailValidation, function (req, res) {
 
 
 //need to make middleware to add a time of api call to the userwithtoken model
-app.get('/secFiles/:fileNum', updateUserWithTokenApiReq, userIsLoggedInTrueOrFalse, function (req, res) {
+app.get('/secfiles/:fileNum', updateUserWithTokenApiReq, userIsLoggedInTrueOrFalse, function (req, res) {
   if (req.isLoggedIn == true ){
     let pathToFile = "./Sec_fiings/resources/companies/" + req.params['fileNum'];
     res.download(pathToFile + ".zip", req.params['fileNum']);
