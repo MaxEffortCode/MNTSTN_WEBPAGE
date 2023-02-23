@@ -44,7 +44,7 @@
           userCode = formData.get('message');
           display.textContent = "";
           try {
-            const res = await fetch('/api/auth/execute', {
+            const res = await fetch('/api/auth/pythonSandbox', {
               method: 'POST',
               body: JSON.stringify({
                 message: userCode,
