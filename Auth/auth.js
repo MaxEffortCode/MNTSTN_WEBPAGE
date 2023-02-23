@@ -1,5 +1,5 @@
 const {NodeVM} = require('vm2');
-const { PythonShell } = require('python-shell');
+
 const User = require("../model/user");
 const UserWithToken = require("../model/userWithToken");
 const bcrypt = require("bcryptjs");

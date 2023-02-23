@@ -3,6 +3,7 @@ const router = express.Router();
 
 const { register, login, update, deleteUser, getUsers, getUserSelf, registerWithToken, getUserToken, execute } = require("./auth");
 const { adminAuth, userAuth, userIsLoggedIn, userIsLoggedInTrueOrFalse } = require("../middleware/auth");
+const { pythonSandbox } = require("../Sandbox/sandbox");
 
 router.route("/registerWithToken").post(registerWithToken);
 router.route("/register").post(userIsLoggedInTrueOrFalse, register);
@@ -15,5 +16,6 @@ router.route("/getUserSelf").get(userAuth, getUserSelf);
 router.route("/getUserSelf").post(getUserSelf);
 router.route("/getUserToken").post(getUserToken);
 router.route("/execute").post(execute);
+router.route("/pythonSandbox").post(pythonSandbox);
 
 module.exports = router;
