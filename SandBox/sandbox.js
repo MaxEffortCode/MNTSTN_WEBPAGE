@@ -1,6 +1,5 @@
 const { PythonShell } = require("python-shell");
 const fs = require("fs");
-const { error } = require("console");
 
 function savePythonFile(input) {
   const filename = "SandBox/UserPythonScripts/tester.py";
@@ -40,8 +39,10 @@ exports.pythonSandbox = async (req, res, next) => {
         console.log(err);
         //set variable responseError to the first error in the array
         const responseError = err.stack.split("at")[0];
-        const responseErrorClean = responseError.replace("File \"SandBox/UserPythonScripts/tester.py\",", "");
-        
+        let responseErrorClean = responseError.replace("File \"SandBox/UserPythonScripts/tester.py\",", "");
+        responseErrorClean = responseErrorClean.replace("line", "Line");
+        responseErrorClean = responseErrorClean.replace(/\r?\n|\r/g, " ");
+
         res.status(500).json({ success: false, userCodeReturn: responseErrorClean });
         
       } else {
