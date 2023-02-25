@@ -6,6 +6,8 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>EZ-SEC Docs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
     <!-- Favicon-->
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
     <!-- Core theme CSS (includes Bootstrap)-->
@@ -90,42 +92,45 @@
               
 
             </p>
-      <pre>
-        <code class="language-python">
-          import requests as req
-          import json
-          
-          token = &lt;your api token here&gt;
-          token_in_json = {'token': token}
-          resp = req.get("https://ezsecapi.com/secfiles/1000032", params=token_in_json)
-        </code>
-      </pre>
+      
+      
     </div>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="ptyhon-tab" data-bs-toggle="tab" data-bs-target="#python" type="button" role="tab" aria-controls="python" aria-selected="true">Python</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="java-tab" data-bs-toggle="tab" data-bs-target="#java" type="button" role="tab" aria-controls="java" aria-selected="false">Java</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="js-tab" data-bs-toggle="tab" data-bs-target="#js" type="button" role="tab" aria-controls="js" aria-selected="false">JavaScript</button>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="python" role="tabpanel" aria-labelledby="python-tab">
+        <pre>
+          <code class="language-python">
+import requests as req
+import json
+
+token = &lt;your api token here&gt;
+token_in_json = {'token': token}
+resp = req.get("https://ezsecapi.com/secfiles/1000032", params=token_in_json)
+open("secfile.zip", "wb").write(resp.content)
+          </code>
+        </pre>
+      </div>
+      <div class="tab-pane fade" id="java" role="tabpanel" aria-labelledby="java-tab">...</div>
+      <div class="tab-pane fade" id="js" role="tabpanel" aria-labelledby="js-tab">...</div>
+    </div>
+    
     </div>
 
-    <div class="container-fluid mt-3">
-      <h1>Code Example</h1>
-      <form id="my-form">
-        <div class="form-group">
-          
-          <label for="inputMessage">Try it yourself:</label>
-          <textarea class="form-control" id="inputMessage" name="message" rows="3" placeholder="Enter your message"></textarea>
-        </div>
-        <button type="submit" class="btn btn-success" >Run</button>
-      </form>
-      <div class="container mt-5">
-        <div class="box">
-     <div id="codeReturn" class="d-flex flex-row align-items-center mb-4"></div>
-     </div>
-     </div>
-     
-        
-        
-      </div>
     </div>
     <!-- Bootstrap core JS-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Core theme JS-->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+        <!-- Core theme JS-->
     <script src="js/scripts.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>

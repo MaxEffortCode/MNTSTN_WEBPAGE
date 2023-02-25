@@ -83,6 +83,7 @@ app.get('/secfiles/:fileNum',  function (req, res) {
   }
   else{
     //these two lines are for testing purposes please remove them
+    console.log("user requested file : " + req.params['fileNum']);
     let pathToFile = "./Sec_fiings/resources/companies/" + req.params['fileNum'];
     res.download(pathToFile + ".zip", req.params['fileNum']);
     //res.render("login", {"userNM" : req.title, "userFromReq": req.user, "logdetails":"", "isLoggedIn" : req.isLoggedIn})
