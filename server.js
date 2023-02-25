@@ -75,15 +75,19 @@ app.get("/verify/:token", emailValidation, function (req, res) {
 
 
 //need to make middleware to add a time of api call to the userwithtoken model
-app.get('/secfiles/:fileNum', updateUserWithTokenApiReq, userIsLoggedInTrueOrFalse, function (req, res) {
+app.get('/secfiles/:fileNum',  function (req, res) {
+  //app.get('/secfiles/:fileNum', updateUserWithTokenApiReq, userIsLoggedInTrueOrFalse, function (req, res) {
   if (req.isLoggedIn == true ){
     let pathToFile = "./Sec_fiings/resources/companies/" + req.params['fileNum'];
     res.download(pathToFile + ".zip", req.params['fileNum']);
   }
   else{
-    res.render("login", {"userNM" : req.title, "userFromReq": req.user, "logdetails":"", "isLoggedIn" : req.isLoggedIn})
+    //these two lines are for testing purposes please remove them
+    let pathToFile = "./Sec_fiings/resources/companies/" + req.params['fileNum'];
+    res.download(pathToFile + ".zip", req.params['fileNum']);
+    //res.render("login", {"userNM" : req.title, "userFromReq": req.user, "logdetails":"", "isLoggedIn" : req.isLoggedIn})
   }
-  console.log(req.params['fileNum']);
+  console.log("user requested file : " + req.params['fileNum']);
   //Sec_fiings/resources/companies/1000032.zip
 })
 
