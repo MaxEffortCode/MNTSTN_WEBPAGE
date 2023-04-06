@@ -1,7 +1,7 @@
-import requests as req
-import json
-token = 130303
-token_in_json = {'token': token}
-resp = req.get("http://localhost:5000/secfiles/1000032", params={})
-print(resp.content)
-open("i.zip", "wb").write(resp.content)
+import requests
+API_TOKEN = 'your_token'
+r = requests.get('http://localhost:5000/secfiles/1000032')
+          #check if the request was successful
+
+print("helloee")
+print("helloe")

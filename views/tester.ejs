@@ -6,17 +6,32 @@
     <link href="/css/prism.css" rel="stylesheet" />
   </head>
   <body>
-    <div class="box">
+    <div class="container mt-1">
+      <h1>Code Example</h1>
       <pre>
-        <code class="language-html">
-          &lt;form id="my-form"&gt;
-            &lt;div class="form-group"&gt;
-              &lt;label for="inputMessage"&gt;Try it yourself:&lt;/label&gt;
-              &lt;textarea class="form-control" id="inputMessage" name="message" rows="3" placeholder="Enter your message"&gt;&lt;/textarea&gt;
-            &lt;/div&gt;
-            &lt;button type="submit" class="btn btn-success" &gt;Run&lt;/button&gt;
-          &lt;/form&gt;
-          &lt;div class="d-flex p-2"&gt; &lt;div id="codeReturn" class="d-flex flex-row align-items-center mb-4"&gt;&lt;/div&gt;&lt;/div&gt;
+        <code class="language-python">
+import requests
+import os
+
+API_TOKEN = 'your_token'
+r = requests.get('http://localhost:5000/secfiles/1000032')
+
+#check if the request was successful
+print(r.status_code)
+
+#get the current directory
+directory = os.path.dirname(__file__)
+
+#save the file to the current directory
+with open(f'{directory}/test.zip', 'wb') as f:
+    f.write(r.content)
+
+#close the request
+r.close()
+
+#close the file
+f.close()
+
         </code>
       </pre>
     </div>
@@ -38,6 +53,10 @@
     <script>
         const display = document.querySelector("#codeReturn");
         const form = document.getElementById('my-form');
+        var prefill = "test"
+        const formInput = document.getElementById('inputMessage');
+        formInput.setAttribute('value', prefill);
+
         form.addEventListener('submit', async (event) => {
           event.preventDefault();
           const formData = new FormData(form);
@@ -52,16 +71,23 @@
             headers: { "Content-Type": "application/json" },
             });
             const result = await res.json();
+            
+
             if (res.status === 200 || res.status === 201 || res.status === 500) {
-                return (display.textContent = `Your result: ${JSON.stringify(result.userCodeReturn)}`);
+                //result.download();
+                display.textContent = `Your result: ${JSON.stringify(result.userCodeReturn)}`;
+                
               }
             console.log('success');
             console.log("this is the result: " +JSON.stringify(result));
+            //download the zip file
+            
           } catch (err) {
             console.error(err);
           }
         });
     </script>
     <script src="/js/prism.js"></script>
+    
   </body>
 </html>
