@@ -133,33 +133,6 @@ open("secfile.zip", "wb").write(resp.content)
         <!-- Core theme JS-->
     <script src="js/scripts.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        const display = document.querySelector("#codeReturn");
-        const form = document.getElementById('my-form');
-        form.addEventListener('submit', async (event) => {
-          event.preventDefault();
-          const formData = new FormData(form);
-          userCode = formData.get('message');
-          display.textContent = "";
-          try {
-            const res = await fetch('/api/auth/execute', {
-              method: 'POST',
-              body: JSON.stringify({
-                message: userCode,
-              }),
-            headers: { "Content-Type": "application/json" },
-            });
-            const result = await res.json();
-            if (res.status === 200 || res.status === 201 || res.status === 500) {
-                return (display.textContent = `Your result: ${JSON.stringify(result.userCodeReturn)}`);
-              }
-            console.log('success');
-            console.log("this is the result: " +JSON.stringify(result));
-          } catch (err) {
-            console.error(err);
-          }
-        });
-    </script>
     <script src="/js/prism.js"></script>
   </body>
 </html>
