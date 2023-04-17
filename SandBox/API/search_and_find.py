@@ -119,9 +119,9 @@ class SearchAndFind:
     def __init__(self, year, quarter):
         self.year = year
         self.quarter = quarter
-        self.cik_name_file = f"{os.path.dirname(__file__)}/../resources/{self.year}/{self.quarter}/lookup/cik_name.csv"
-        self.name_file = f"{os.path.dirname(__file__)}/../resources/{self.year}/{self.quarter}/lookup/name.csv"
-        self.ticker_file = f"{os.path.dirname(__file__)}/../resources/{self.year}/{self.quarter}/lookup/tickers.csv"
+        self.cik_name_file = f"{os.path.dirname(__file__)}/../../../../MntStn/Apps/Collection/src/resources/{self.year}/{self.quarter}/lookup/cik_name.csv"
+        self.name_file = f"{os.path.dirname(__file__)}/../../../../MntStn/Apps/Collection/src/resources/{self.year}/{self.quarter}/lookup/name.csv"
+        self.ticker_file = f"{os.path.dirname(__file__)}/../../../../MntStn/Apps/Collection/src/resources/{self.year}/{self.quarter}/lookup/tickers.csv"
 
     def __repr__(self):
         return f"SearchAndFind({self.year}, {self.quarter})"

@@ -21,10 +21,11 @@ exports.pythonSandbox = async (req, res, next) => {
     let options = {
       mode: "text",
       pythonOptions: ["-u"],
-      scriptPath: "SandBox/UserPythonScripts",
+      scriptPath: "SandBox/API",
+      args: ["value1", "value2", "value3"],
     };
 
-    const pyshell = new PythonShell("tester.py", options);
+    const pyshell = new PythonShell("search_and_find.py", options);
 
     let dataToSend = "";
 
