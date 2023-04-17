@@ -1,5 +1,7 @@
 const {NodeVM} = require('vm2');
+const { PythonShell } = require("python-shell");
 const express = require("express")
+
 
 const app = express()
 const PORT = 5000
@@ -72,6 +74,23 @@ app.get("/verify/:token", emailValidation, function (req, res) {
   res.render("verify", {"token" : req.params.token});
 }
 )
+
+
+/* app.get("/api/v1/:year/:qrt/:companyName", userAuth, function (req, res) {
+  try {
+    console.log("trying to search and find with year: " + req.params['year'] 
+    + " qrt: " + req.params['qrt'] + " company: " + req.params['companyName']);
+
+    let options = {
+      mode: "text",
+      pythonOptions: ["-u"],
+      scriptPath: "SandBox/API",
+      args: ["value1", "value2", "value3"],
+    };
+
+    const pyshell = new PythonShell("search_and_find.py", options);
+  }
+}) */
 
 
 //need to make middleware to add a time of api call to the userwithtoken model

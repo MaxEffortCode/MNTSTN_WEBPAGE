@@ -123,9 +123,9 @@ class SearchAndFind:
         self.name_file = f"{os.path.dirname(__file__)}/../../../../MntStn/Apps/Collection/src/resources/{self.year}/{self.quarter}/lookup/name.csv"
         self.ticker_file = f"{os.path.dirname(__file__)}/../../../../MntStn/Apps/Collection/src/resources/{self.year}/{self.quarter}/lookup/tickers.csv"
 
+        
     def __repr__(self):
         return f"SearchAndFind({self.year}, {self.quarter})"
-
 
     def update_year(self, year):
         self.year = year
@@ -139,7 +139,8 @@ class SearchAndFind:
             reader = csv.reader(csv_file)
             for row in reader:
                 name_array.append(row[1])
-                if row[1] == name.upper():
+                if row[1].upper() == name.upper():
+                    print(f"Name found: {name} with cik: {row[0]}")
                     return row[0]
             
             print(f"Name not found: {name}")
@@ -156,25 +157,37 @@ class SearchAndFind:
         with open(self.ticker_file, 'r') as csv_file:
             reader = csv.reader(csv_file)
             for row in reader:
-                if row[0] == ticker.lower():
+                if row[0].lower() == ticker.lower():
                     return row[1]
             return None
 
     def search_cik(self, cik):
-        # search cik_name.csv file
-        # use csv reader to read the file
-        # if the search term is found return the cik
-        # else return none
         with open(self.cik_name_file, 'r') as csv_file:
             reader = csv.reader(csv_file)
             for row in reader:
                 if row[0] == cik:
                     return row[0]
             return None
+    #needs work
+    def find_files_all(self, cik):
+        dirpath = f"{os.path.dirname(__file__)}/../../../../MntStn/Apps/Collection/src/resources/{self.year}/{self.quarter}/companies/{cik}/filings"
+        print(f"dirpath : {dirpath}")
+        ''' fileNames = next(os.walk(dirpath), (None, None, []))
+        print(f"filenames : {fileNames}") '''
+        paths = []
+        for root, dirs, files in os.walk(dirpath):
+            for file in files:
+                paths.append(os.path.join(root, file))
+        
+        print(f"paths : {paths}")
+        return paths
 
 
 if __name__ == "__main__":
-    search = SearchAndFind(2017, 1,)
-    print(search.search_cik('946563'))
-    print(search.search_ticker('AAPL'))
-    print(search.search_name('BINdwawd'))
+    companyName = sys.argv[1]
+    year = sys.argv[2]
+    quarter = sys.argv[3]
+    search = SearchAndFind(year, quarter)
+    companyCIK = search.search_name(companyName)
+    files = search.find_files_all(companyCIK)
+    

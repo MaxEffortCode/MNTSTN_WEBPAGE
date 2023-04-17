@@ -1,19 +1,18 @@
 const { PythonShell } = require("python-shell");
 const fs = require("fs");
 
-function savePythonFile(input) {
-  const filename = "SandBox/UserPythonScripts/tester.py";
-  const content = input;
-
-  fs.writeFile(filename, content, (err) => {
-    if (err) throw err;
-    console.log("The file has been saved!");
-  });
-}
 
 exports.pythonSandbox = async (req, res, next) => {
   const code = req.body.message;
-  savePythonFile(code);
+  console.log("req.body.message: " + req.body.message);
+  //set company to the company name which is the first argument in the python script
+  const company = req.body.companyName;
+  console.log("req.body.companyName: " + req.body.companyName);
+  const year = req.body.year;
+  console.log("req.body.year: " + req.body.year);
+  const qrt = req.body.quarter;
+  console.log("req.body.qrt: " + req.body.quarter);
+
 
   try {
     console.log("trying to run user python code: " + code);
@@ -22,7 +21,7 @@ exports.pythonSandbox = async (req, res, next) => {
       mode: "text",
       pythonOptions: ["-u"],
       scriptPath: "SandBox/API",
-      args: ["value1", "value2", "value3"],
+      args: [company, year, qrt],
     };
 
     const pyshell = new PythonShell("search_and_find.py", options);
