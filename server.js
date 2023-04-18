@@ -76,21 +76,51 @@ app.get("/verify/:token", emailValidation, function (req, res) {
 )
 
 
-/* app.get("/api/v1/:year/:qrt/:companyName", userAuth, function (req, res) {
+app.get("/api/v1/:year/:qrt/:companyName", function (req, res) {
   try {
     console.log("trying to search and find with year: " + req.params['year'] 
     + " qrt: " + req.params['qrt'] + " company: " + req.params['companyName']);
+    
+    let company = req.params['companyName'];
+    let year = req.params['year'];
+    let qrt = req.params['qrt'];
 
     let options = {
       mode: "text",
       pythonOptions: ["-u"],
       scriptPath: "SandBox/API",
-      args: ["value1", "value2", "value3"],
+      args: [company, year, qrt],
     };
 
     const pyshell = new PythonShell("search_and_find.py", options);
+
+    let dataToSend = "";
+
+    pyshell.on("message", (message) => {
+      console.log("result: " + message);
+      dataToSend = message;
+    });
+
+    pyshell.end((err, code, signal) => {
+      if (err) {
+        console.log("error here");
+        console.log(err);
+        //set variable responseError to the first error in the array
+        res.status(500).json({ success: false, error: err });
+        
+      } else {
+        //download the file using the response
+        console.log("success");
+        const pathToFile = dataToSend;
+        res.download(pathToFile, company + ".zip");
+      }
+    });
+  } catch (err) {
+    console.log(err);
+    console.log("error");
+    res.status(500).json({ success: false, error: err });
   }
-}) */
+});
 
 
 //need to make middleware to add a time of api call to the userwithtoken model

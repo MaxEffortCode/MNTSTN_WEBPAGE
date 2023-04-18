@@ -71,7 +71,7 @@ f.close()
                 //set the year to the second line of the message
                 year: userCode.split('\n')[1],
                 //set the quarter to the third line of the message
-                quarter: "1",
+                quarter: userCode.split('\n')[2],
                 message: userCode.split('\n'),
               }),
             headers: { "Content-Type": "application/json" },

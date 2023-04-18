@@ -197,7 +197,7 @@ class SearchAndFind:
         zip_file.close()
         
         
-        print(f"returnPath: {returnPath}")
+        print(f"{returnPath}")
         
         return returnPath
         
