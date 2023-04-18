@@ -2,6 +2,7 @@ import os
 import sys
 import csv
 import time
+import zipfile as zf
 
 
 
@@ -168,12 +169,10 @@ class SearchAndFind:
                 if row[0] == cik:
                     return row[0]
             return None
-    #needs work
+
     def find_files_all(self, cik):
         dirpath = f"{os.path.dirname(__file__)}/../../../../MntStn/Apps/Collection/src/resources/{self.year}/{self.quarter}/companies/{cik}/filings"
         print(f"dirpath : {dirpath}")
-        ''' fileNames = next(os.walk(dirpath), (None, None, []))
-        print(f"filenames : {fileNames}") '''
         paths = []
         for root, dirs, files in os.walk(dirpath):
             for file in files:
@@ -181,6 +180,30 @@ class SearchAndFind:
         
         print(f"paths : {paths}")
         return paths
+
+    #function that takes in list of path to files
+    #it will compress the files as a zip file
+    #it will return the zip file
+    def compress(self, paths, cik):
+        print(f"**************************compress*****************************")
+        returnPath = f"{os.path.dirname(__file__)}/../../../../MntStn/Apps/Collection/src/resources/{self.year}/{self.quarter}/companies/{cik}/filings.zip"
+        #if zip file exists return it
+        if os.path.exists(f"{os.path.dirname(__file__)}/../../../../MntStn/Apps/Collection/src/resources/{self.year}/{self.quarter}/companies/{cik}/filings.zip"):
+            print(f"returnPath: {returnPath}")
+            return f"{os.path.dirname(__file__)}/../../../../MntStn/Apps/Collection/src/resources/{self.year}/{self.quarter}/companies/{cik}/filings.zip"
+        zip_file = zf.ZipFile(f"{os.path.dirname(__file__)}/../../../../MntStn/Apps/Collection/src/resources/{self.year}/{self.quarter}/companies/{cik}/filings.zip", 'w')
+        for path in paths:
+            zip_file.write(path)
+        zip_file.close()
+        
+        
+        print(f"returnPath: {returnPath}")
+        
+        return returnPath
+        
+        
+        
+    
 
 
 if __name__ == "__main__":
@@ -190,4 +213,5 @@ if __name__ == "__main__":
     search = SearchAndFind(year, quarter)
     companyCIK = search.search_name(companyName)
     files = search.find_files_all(companyCIK)
+    compressedFiles = search.compress(files, companyCIK)
     
