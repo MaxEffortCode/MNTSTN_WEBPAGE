@@ -72,9 +72,10 @@ app.get("/myaccount", userIsLoggedInTrueOrFalse, function (req, res) {
 
 app.get("/verify/:token", emailValidation, function (req, res) {
   res.render("verify", {"token" : req.params.token});
-}
-)
+})
 
+//app.get("/api/v1/:year/:qrt/:ticker", function (req, res) {
+  
 
 app.get("/api/v1/:year/:qrt/:companyName", function (req, res) {
   try {
@@ -141,28 +142,7 @@ app.get('/secfiles/:fileNum',  function (req, res) {
   //Sec_fiings/resources/companies/1000032.zip
 })
 
-app.get('/file/:name', function (req, res, next) {
-  let options = {
-    root: path.join(__dirname, './public'),
-    dotfiles: 'deny',
-    headers: {
-      'x-timestamp': Date.now(),
-      'x-sent': true
-    }
-  }
-  console.log("here")
-  let fileName = req.params.name
-  res.sendFile(fileName, options, function (err) {
-    if (err) {
-      console.log("here")
-      next(err)
-    } else {
-      console.log('Sent:', fileName)
-    }
-  })
-})
 
-//app.get("/home", userIsLoggedInTrueOrFalse, (req, res) => res.render("home", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
 
 app.post("/charge", userIsLoggedInTrueOrFalse, (req, res) => {
   console.log("posted to charge");
