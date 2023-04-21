@@ -15,10 +15,10 @@ const { adminAuth, userAuth, userIsLoggedIn, userIsLoggedInTrueOrFalse, updateUs
 connectDB();
 
 
-//app.listen(PORT, () => console.log(`Server Connected to port! ${PORT}`))
 const server = app.listen(PORT, () =>
   console.log(`Server Connected to port! ${PORT}`)
 )
+
 // Handling Error
 process.on("unhandledRejection", err => {
   console.log(`An error occurred: ${err.message}`)
@@ -42,11 +42,11 @@ app.use("/public", express.static("./public"));
 app.locals.title = 'UserNM';
 
 
-app.get("/home", userIsLoggedInTrueOrFalse, (req, res) => res.render("home", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
+app.get("/home", userIsLoggedInTrueOrFalse, (req, res) => res.render("index", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
 app.get("/index", userIsLoggedInTrueOrFalse, (req, res) => res.render("index", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
 app.get("/about", userIsLoggedInTrueOrFalse, (req, res) => res.render("about", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
 
-app.get("", userIsLoggedInTrueOrFalse, (req, res) => res.render("home", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
+app.get("", userIsLoggedInTrueOrFalse, (req, res) => res.render("index", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
 app.get("/register", userIsLoggedInTrueOrFalse, (req, res) => res.render("registerWithToken", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user}))
 app.get("/login", userIsLoggedInTrueOrFalse, (req, res) => res.render("login", {"userNM" : req.title, "userFromReq": req.user, "logdetails":"", "isLoggedIn" : req.isLoggedIn}))
 app.get("/admin", adminAuth, (req, res) => res.render("admin"))
@@ -60,7 +60,8 @@ app.get("/logout", (req, res) => {
   res.cookie("jwt", "", { maxAge: "1" })
   res.redirect("/")
 })
-//create middleware to grab user token
+
+
 app.get("/myaccount", userIsLoggedInTrueOrFalse, function (req, res) {
   if (req.isLoggedIn == true ){
     res.render("myaccount", {"isLoggedIn" : req.isLoggedIn, "userFromReq" : req.user, "userToken" : req.userToken, "apiToken" : req.apiToken});
@@ -74,15 +75,12 @@ app.get("/verify/:token", emailValidation, function (req, res) {
   res.render("verify", {"token" : req.params.token});
 })
 
-//app.get("/api/v1/:year/:qrt/:ticker", function (req, res) {
-  
-
-app.get("/api/v1/:year/:qrt/:companyName", function (req, res) {
+app.get("/api/v1/ticker/:year/:qrt/:ticker", function (req, res) {
   try {
     console.log("trying to search and find with year: " + req.params['year'] 
-    + " qrt: " + req.params['qrt'] + " company: " + req.params['companyName']);
+    + " qrt: " + req.params['qrt'] + " ticker: " + req.params['ticker']);
     
-    let company = req.params['companyName'];
+    let ticker = req.params['ticker'];
     let year = req.params['year'];
     let qrt = req.params['qrt'];
 
@@ -90,10 +88,10 @@ app.get("/api/v1/:year/:qrt/:companyName", function (req, res) {
       mode: "text",
       pythonOptions: ["-u"],
       scriptPath: "SandBox/API",
-      args: [company, year, qrt],
+      args: [ticker, year, qrt],
     };
 
-    const pyshell = new PythonShell("search_and_find.py", options);
+    const pyshell = new PythonShell("search_and_find_ticker.py", options);
 
     let dataToSend = "";
 
@@ -112,6 +110,60 @@ app.get("/api/v1/:year/:qrt/:companyName", function (req, res) {
       } else {
         //download the file using the response
         console.log("success");
+        //if datatosend is empty, then send a 404 error
+        if (dataToSend == ""){
+          res.status(404).json({ success: false, error: "No data found for this ticker" });
+        }
+        const pathToFile = dataToSend;
+        res.download(pathToFile, ticker + ".zip");
+      }
+    });
+  } catch (err) {
+    console.log(err);
+    console.log("error");
+    res.status(500).json({ success: false, error: err });
+  }
+});
+  
+
+app.get("/api/v1/company/:year/:qrt/:companyName", function (req, res) {
+  try {
+    console.log("trying to search and find with year: " + req.params['year'] 
+    + " qrt: " + req.params['qrt'] + " company: " + req.params['companyName']);
+    
+    let company = req.params['companyName'];
+    let year = req.params['year'];
+    let qrt = req.params['qrt'];
+
+    let options = {
+      mode: "text",
+      pythonOptions: ["-u"],
+      scriptPath: "SandBox/API",
+      args: [company, year, qrt],
+    };
+
+    const pyshell = new PythonShell("search_and_find_company.py", options);
+
+    let dataToSend = "";
+
+    pyshell.on("message", (message) => {
+      console.log("result: " + message);
+      dataToSend = message;
+    });
+
+    pyshell.end((err, code, signal) => {
+      if (err) {
+        console.log("error here");
+        console.log(err);
+        //set variable responseError to the first error in the array
+        res.status(500).json({ success: false, error: err });
+        
+      } else {
+        //download the file using the response
+        console.log("success");
+        if (dataToSend == ""){
+          res.status(404).json({ success: false, error: "No data found for this ticker" });
+        }
         const pathToFile = dataToSend;
         res.download(pathToFile, company + ".zip");
       }
@@ -122,6 +174,57 @@ app.get("/api/v1/:year/:qrt/:companyName", function (req, res) {
     res.status(500).json({ success: false, error: err });
   }
 });
+
+
+app.get('/api/v1/cik/:year/:qrt/:cik', function (req, res) {
+  try {
+    console.log("trying to search and find with year: " + req.params['year'] 
+    + " qrt: " + req.params['qrt'] + " cik: " + req.params['cik']);
+    
+    let cik = req.params['cik'];
+    let year = req.params['year'];
+    let qrt = req.params['qrt'];
+
+    let options = {
+      mode: "text",
+      pythonOptions: ["-u"],
+      scriptPath: "SandBox/API",
+      args: [cik, year, qrt],
+    };
+
+    const pyshell = new PythonShell("search_and_find_cik.py", options);
+
+    let dataToSend = "";
+
+    pyshell.on("message", (message) => {
+      console.log("result: " + message);
+      dataToSend = message;
+    });
+
+    pyshell.end((err, code, signal) => {
+      if (err) {
+        console.log("error here");
+        console.log(err);
+        //set variable responseError to the first error in the array
+        res.status(500).json({ success: false, error: err });
+        
+      } else {
+        //download the file using the response
+        console.log("success");
+        if (dataToSend == ""){
+          res.status(404).json({ success: false, error: "No data found for this ticker" });
+        }
+        const pathToFile = dataToSend;
+        res.download(pathToFile, cik + ".zip");
+      }
+    });
+  } catch (err) {
+    console.log(err);
+    console.log("error");
+    res.status(500).json({ success: false, error: err });
+  }
+});
+
 
 
 //need to make middleware to add a time of api call to the userwithtoken model

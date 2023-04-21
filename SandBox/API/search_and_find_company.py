@@ -214,4 +214,5 @@ if __name__ == "__main__":
     companyCIK = search.search_name(companyName)
     files = search.find_files_all(companyCIK)
     compressedFiles = search.compress(files, companyCIK)
+    exit(0)
     
