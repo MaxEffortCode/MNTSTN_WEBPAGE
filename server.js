@@ -10,7 +10,7 @@ const cookieParser = require("cookie-parser");
 
 const bodyParser = require('body-parser');
 const stripe = require('stripe')('sk_test_51M2mNpCyYVSsKZLoeOG3sbmhoo4n6Q1c9DBEYiMznjT7JrXS4eW2bcROZU2EBLTknFcJmhLqighHIYPMlbyNPUQa00GsQso4VK');
-const { adminAuth, userAuth, userIsLoggedIn, userIsLoggedInTrueOrFalse, updateUserWithTokenApiReq, emailValidation } = require("./middleware/auth.js");
+const { adminAuth, userAuth, userIsLoggedInTrueOrFalse, updateUserWithTokenApiReq, emailValidation } = require("./middleware/auth.js");
 //Connecting the Database
 connectDB();
 
